@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1759994569985,
+      "tag": "0000_parallel_ender_wiggin",
+      "breakpoints": true
+    }
+  ]
+}
