@@ -1,9 +1,13 @@
 <script lang='ts'>
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageData } from './$types';
 
-	let { form }: { form: ActionData } = $props();
-<\/script>
+	// SvelteKit page components receive data via an exported `data` prop.
+	// Use the generated `PageData` type from `$types` when available.
+	export let data: PageData;
+
+	const form: ActionData | undefined = (data as any)?.form;
+</script>
 
 <h1>Login/Register</h1>
 <form method="post" action="?/login" use:enhance>
