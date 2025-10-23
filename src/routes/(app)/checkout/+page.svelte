@@ -1,133 +1,292 @@
-<script lang="ts">
-  import { Button } from "$lib/components/ui/button";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
-  import { enhance } from "$app/forms";
-
-  export let form: { error?: string } | null = null;
-  let paymentMethod = "card";
-
-  const orderSummary = {
-    items: [
-      { name: "Acrylic Paint Set", price: 599, quantity: 1, image: "/images/acrylic.jpg" },
-      { name: "Canvas Board", price: 299, quantity: 1, image: "/images/canvas.jpg" },
-      { name: "Paint Brushes", price: 249, quantity: 1, image: "/images/brushes.jpg" }
-    ],
-    subtotal: 1147,
-    vat: 172.05,
-    shipping: "FREE",
-    total: 1319.05
-  };
-
-  const address = {
-    street: "123 Art Street, Balanga City, Bataan",
-    email: "customer@artventory.com"
-  };
+<script>
+  let paymentMethod = 'credit';
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 flex items-center justify-center p-6 text-white">
-  <div class="w-full max-w-6xl grid md:grid-cols-3 gap-8">
-    
-    <!-- Payment Form -->
-    <div class="md:col-span-2 bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl p-8 border border-white/20">
-      <h2 class="text-3xl font-bold mb-8 tracking-tight">🖌️ Checkout — Artventory</h2>
+<!-- 🧭 NAVIGATION BAR -->
+<nav class="fixed top-0 left-0 w-full bg-white/30 backdrop-blur-lg shadow-lg py-4 px-10 flex items-center justify-between z-50 border-b border-white/20">
+  <h1 class="text-3xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 select-none">
+    ARTVENTORY
+  </h1>
+  <div class="hidden md:flex gap-8 text-gray-800 font-medium">
+    <a href="#" class="hover:text-black transition">Home</a>
+    <a href="#" class="hover:text-black transition">Shop</a>
+    <a href="#" class="hover:text-black transition">Cart</a>
+  </div>
+</nav>
 
-      <!-- Payment Options -->
-      <div class="flex gap-4 mb-8">
-        {#each [
-          { id: 'card', icon: '💳', label: 'Credit Card' },
-          { id: 'paypal', icon: '🅿️', label: 'PayPal' },
-          { id: 'cash', icon: '💵', label: 'Cash' }
-        ] as option}
-          <button
-            type="button"
-            on:click={() => (paymentMethod = option.id)}
-            class="flex-1 border-2 rounded-xl py-3 flex flex-col items-center justify-center transition-all"
-            class:bg-pink-600={paymentMethod === option.id}
-            class:border-yellow-400={paymentMethod === option.id}
-          >
-            {option.icon}
-            <span class="mt-1 font-semibold">{option.label}</span>
-          </button>
-        {/each}
+<div class="checkout-page">
+  <div class="container">
+    <!-- Checkout Form -->
+    <div class="checkout-section">
+      <h2>🖌️ Checkout</h2>
+
+      <div class="payment-methods">
+        <button class:active={paymentMethod === 'credit'} on:click={() => paymentMethod = 'credit'}>💳 Credit</button>
+        <button class:active={paymentMethod === 'paypal'} on:click={() => paymentMethod = 'paypal'}>🅿️ PayPal</button>
+        <button class:active={paymentMethod === 'cash'} on:click={() => paymentMethod = 'cash'}>💵 Cash</button>
       </div>
 
-      <!-- Payment Form -->
-      <form method="POST" use:enhance class="space-y-5">
-        <input type="hidden" name="paymentMethod" value={paymentMethod} />
-
-        {#if paymentMethod === 'card'}
-          <div>
-            <Label for="cardNumber">Card Number</Label>
-            <Input id="cardNumber" name="cardNumber" type="text" placeholder="4035 3005 3980 4083" class="bg-white/10 text-white placeholder-gray-400" />
-          </div>
-
-          <div>
-            <Label for="cardName">Cardholder Name</Label>
-            <Input id="cardName" name="cardName" type="text" placeholder="Sam Daniel M. Roxas" class="bg-white/10 text-white placeholder-gray-400" />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <Label for="expiry">Valid Through</Label>
-              <Input id="expiry" name="expiry" type="text" placeholder="12/25" class="bg-white/10 text-white placeholder-gray-400" />
-            </div>
-            <div>
-              <Label for="cvv">CVV</Label>
-              <Input id="cvv" name="cvv" type="password" placeholder="313" class="bg-white/10 text-white placeholder-gray-400" />
-            </div>
-          </div>
-        {/if}
-
-        <div>
-          <Label for="address">Delivery Address</Label>
-          <Input id="address" name="address" type="text" placeholder={address.street} class="bg-white/10 text-white placeholder-gray-400" />
+      <form class="checkout-form">
+        <div class="input-group">
+          <label>Card Number</label>
+          <input type="text" placeholder="1234 5678 9012 3456" />
         </div>
 
-        <div>
-          <Label for="email">Email</Label>
-          <Input id="email" name="email" type="email" placeholder={address.email} class="bg-white/10 text-white placeholder-gray-400" />
+        <div class="input-group">
+          <label>Cardholder Name</label>
+          <input type="text" placeholder="Your Full Name" />
         </div>
 
-        {#if form?.error}
-          <p class="text-red-400 text-sm">{form.error}</p>
-        {/if}
+        <div class="row">
+          <div class="input-group">
+            <label>Valid Through</label>
+            <input type="text" placeholder="MM/YY" />
+          </div>
+          <div class="input-group">
+            <label>CVV</label>
+            <input type="text" placeholder="123" />
+          </div>
+        </div>
 
-        <Button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-300 text-black py-3 text-lg rounded-xl font-bold transition">
-          Confirm Order
-        </Button>
+        <div class="input-group">
+          <label>Delivery Address</label>
+          <input type="text" placeholder="123 Street, City" />
+        </div>
+
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" placeholder="you@example.com" />
+        </div>
+
+        <button class="confirm-btn">Confirm Order</button>
       </form>
     </div>
 
     <!-- Order Summary -->
-    <div class="bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl p-6 space-y-6 border border-white/20">
-      <h3 class="text-xl font-semibold mb-4">🛒 Order Summary</h3>
+    <div class="order-summary">
+      <h2>🛒 Order Summary</h2>
 
-      <div class="space-y-4">
-        {#each orderSummary.items as item}
-          <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-              <img src={item.image} alt={item.name} class="w-12 h-12 rounded-lg object-cover" />
-              <div>
-                <p class="font-medium">{item.name}</p>
-                <p class="text-xs text-gray-300">Qty: {item.quantity}</p>
-              </div>
-            </div>
-            <p>₱{item.price.toFixed(2)}</p>
+      <div class="items">
+        <div class="item">
+          <img src="/images/acrylic.jpg" alt="Acrylic Paint Set" />
+          <div>
+            <p class="item-name">Acrylic Paint Set</p>
+            <p class="item-qty">Qty: 1</p>
           </div>
-        {/each}
+          <span>₱599</span>
+        </div>
+
+        <div class="item">
+          <img src="/images/canvas.jpg" alt="Canvas Board" />
+          <div>
+            <p class="item-name">Canvas Board</p>
+            <p class="item-qty">Qty: 1</p>
+          </div>
+          <span>₱299</span>
+        </div>
+
+        <div class="item">
+          <img src="/images/brushes.jpg" alt="Paint Brushes" />
+          <div>
+            <p class="item-name">Paint Brushes</p>
+            <p class="item-qty">Qty: 1</p>
+          </div>
+          <span>₱249</span>
+        </div>
       </div>
 
-      <div class="border-t border-gray-500 mt-4 pt-4 text-sm text-gray-300">
-        <div class="flex justify-between"><span>Subtotal</span><span>₱{orderSummary.subtotal.toFixed(2)}</span></div>
-        <div class="flex justify-between"><span>VAT (15%)</span><span>₱{orderSummary.vat.toFixed(2)}</span></div>
-        <div class="flex justify-between"><span>Shipping</span><span>{orderSummary.shipping}</span></div>
+      <hr />
+
+      <div class="totals">
+        <p>Subtotal <span>₱1147</span></p>
+        <p>VAT (15%) <span>₱172</span></p>
+        <p>Shipping <span>FREE</span></p>
       </div>
 
-      <div class="flex justify-between items-center text-xl font-bold mt-3">
-        <span>Total</span>
-        <span>₱{orderSummary.total.toFixed(2)}</span>
-      </div>
+      <h3>Total <span>₱1319</span></h3>
     </div>
   </div>
 </div>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  .checkout-page {
+    background: linear-gradient(to bottom right, #ff6ec4, #7873f5);
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: flex-start;  /* top align to give space from navbar */
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    padding: 120px 1rem 2rem 1rem; /* extra top padding to create space from navbar */
+  }
+
+  .container {
+    display: flex;
+    gap: 2rem;
+    width: 750px;           /* slightly smaller */
+    max-width: 95%;
+    height: auto;           /* fits content */
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 2rem;
+    padding: 1.8rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+
+  .checkout-section, .order-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .checkout-section {
+    flex: 2;
+  }
+
+  .order-summary {
+    flex: 1;
+    padding: 1.5rem;
+    border-radius: 2rem;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: #ff2da8;
+    text-shadow: 1px 1px 4px rgba(255,45,168,0.5);
+    margin-bottom: 1rem;
+  }
+
+  .payment-methods {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .payment-methods button {
+    flex: 1;
+    padding: 0.6rem;
+    border-radius: 15px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background: rgba(0,0,0,0.05);
+    transition: 0.2s;
+  }
+
+  .payment-methods button.active {
+    background: #ff2da8;
+    color: white;
+    box-shadow: 0 0 10px rgba(255,45,168,0.5);
+  }
+
+  .checkout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  input {
+    padding: 0.7rem;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: #ff2da8;
+    box-shadow: 0 0 5px rgba(255,45,168,0.3);
+  }
+
+  .row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .confirm-btn {
+    padding: 0.8rem;
+    border-radius: 15px;
+    border: none;
+    font-weight: 700;
+    background: #ffcc00;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  .confirm-btn:hover {
+    background: #ffaa00;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+  }
+
+  .item-name {
+    font-weight: 600;
+  }
+
+  .item-qty {
+    font-size: 0.85rem;
+    color: #555;
+  }
+
+  .totals p {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.3rem 0;
+  }
+
+  h3 {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #ff2da8;
+    margin-top: 0.5rem;
+  }
+
+  hr {
+    border-top: 1px solid #ddd;
+    margin: 0.5rem 0;
+  }
+
+  @media (max-width: 900px) {
+    .container {
+      flex-direction: column;
+      align-items: center;
+      width: 95%;
+    }
+  }
+</style>

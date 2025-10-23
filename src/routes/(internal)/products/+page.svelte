@@ -3,13 +3,19 @@
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-pink-100 via-white to-purple-100 p-8">
-  <div class="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-400 text-white p-6 rounded-2xl shadow-lg mb-10">
-    <h1 class="text-3xl font-extrabold tracking-wide">🛒 Artventory — Product List</h1>
+  <!-- Header Section -->
+  <div class="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-400 text-white p-6 rounded-2xl shadow-lg mb-10 flex flex-col items-center">
+    <!-- Gradient Text Logo -->
+    <h1 class="text-5xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+      ARTVENTORY
+    </h1>
     <p class="italic text-sm opacity-80 mt-2">Select products to add to your cart</p>
   </div>
 
+  <!-- Product Table -->
   <div class="bg-white/80 backdrop-blur-lg shadow-xl rounded-xl overflow-hidden border border-gray-200">
     <table class="w-full text-left border-collapse">
+      <!-- Table Header -->
       <thead class="bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-400 text-white uppercase text-sm tracking-wider">
         <tr>
           <th class="py-3 px-5">Product</th>
@@ -19,6 +25,7 @@
         </tr>
       </thead>
 
+      <!-- Table Body -->
       <tbody>
         {#each data.products as product (product.id)}
           <tr class="hover:bg-pink-50 transition-all border-b border-gray-200">
