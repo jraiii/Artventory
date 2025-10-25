@@ -1,51 +1,41 @@
 <script lang="ts">
-  export let data;
+  import { addToCart } from '$lib/stores/cart';
+
+  // Later, these will come from your +page.server.ts
+  const products = [
+    { id: 1, name: "Acrylic Paint Set", price: 499, image: "/images/acrylic.jpg" },
+    { id: 2, name: "Brush Set", price: 299, image: "/images/brushes.jpg" },
+    { id: 3, name: "Sketchbook A4", price: 199, image: "/images/sketchbook.jpg" },
+  ];
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-pink-100 via-white to-purple-100 p-8">
-  <!-- Header Section -->
-  <div class="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-400 text-white p-6 rounded-2xl shadow-lg mb-10 flex flex-col items-center">
-    <!-- Gradient Text Logo -->
-    <h1 class="text-5xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
-      ARTVENTORY
-    </h1>
-    <p class="italic text-sm opacity-80 mt-2">Select products to add to your cart</p>
+<!-- 🧭 NAVIGATION BAR -->
+<nav class="fixed top-0 left-0 w-full bg-white/30 backdrop-blur-lg shadow-lg py-4 px-10 flex items-center justify-between z-50 border-b border-white/20">
+  <h1 class="text-3xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 select-none">
+    ARTVENTORY
+  </h1>
+  <div class="hidden md:flex gap-8 text-gray-800 font-medium">
+    <a href="/" class="hover:text-black transition">Home</a>
+    <a href="/products" class="hover:text-black transition">Shop</a>
+    <a href="/cart" class="hover:text-black transition">Cart</a>
   </div>
+</nav>
 
-  <!-- Product Table -->
-  <div class="bg-white/80 backdrop-blur-lg shadow-xl rounded-xl overflow-hidden border border-gray-200">
-    <table class="w-full text-left border-collapse">
-      <!-- Table Header -->
-      <thead class="bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-400 text-white uppercase text-sm tracking-wider">
-        <tr>
-          <th class="py-3 px-5">Product</th>
-          <th class="py-3 px-5">Description</th>
-          <th class="py-3 px-5">Price</th>
-          <th class="py-3 px-5 text-center">Action</th>
-        </tr>
-      </thead>
-
-      <!-- Table Body -->
-      <tbody>
-        {#each data.products as product (product.id)}
-          <tr class="hover:bg-pink-50 transition-all border-b border-gray-200">
-            <td class="py-4 px-5 font-semibold text-gray-900">{product.name}</td>
-            <td class="py-4 px-5 text-gray-600">{product.description}</td>
-            <td class="py-4 px-5 font-bold text-purple-600">${product.price.toFixed(2)}</td>
-            <td class="py-4 px-5 text-center">
-              <form method="POST" action="?/addToCart">
-                <input type="hidden" name="productId" value={product.id} />
-                <button
-                  type="submit"
-                  class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium shadow hover:scale-105 transition-all"
-                >
-                  Add to Cart
-                </button>
-              </form>
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
-</div>
+<!-- 🛍️ PRODUCT GRID -->
+<main class="pt-28 min-h-screen bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 flex flex-col items-center justify-center p-10">
+  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-5xl">
+    {#each products as product}
+      <div class="bg-white/80 rounded-3xl shadow-xl p-6 hover:shadow-2xl transition transform hover:-translate-y-1 backdrop-blur-sm">
+        <img src={product.image} alt={product.name} class="w-full h-48 object-cover rounded-2xl" />
+        <h2 class="text-lg font-bold mt-4">{product.name}</h2>
+        <p class="text-sm text-gray-600 mt-1">₱{product.price}</p>
+        <button
+          class="mt-4 w-full bg-gradient-to-r from-pink-600 to-indigo-600 text-white font-semibold py-2 rounded-full shadow hover:opacity-90 transition active:scale-95"
+          on:click={() => addToCart(product)}
+        >
+          Add to Cart
+        </button>
+      </div>
+    {/each}
+  </section>
+</main>
