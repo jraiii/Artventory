@@ -8,6 +8,13 @@
       "when": 1759994569985,
       "tag": "0000_parallel_ender_wiggin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1762489077514,
+      "tag": "0001_hesitant_jack_flag",
+      "breakpoints": true
     }
   ]
 }

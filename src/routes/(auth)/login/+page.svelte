@@ -1,23 +1,27 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { user as userStore } from '$lib/stores/auth';
-  let email = '';
+  let username = '';
   let password = '';
+  let loading = false;
 
   async function submit(e: Event) {
     e.preventDefault();
+
+    loading = true;
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ username, password })
     });
+
+    loading = false;
+
     if (res.ok) {
-      const { user } = await res.json();
-      userStore.set(user);
-      if (user?.isAdmin) goto('/app/admin');
-      else goto('/app/products');
+      const { redirectTo } = await res.json();
+      goto(redirectTo);
     } else {
-      alert('Invalid email or password');
+      const err = await res.json().catch(() => ({}));
+      alert(err.message || 'Invalid username or password');
     }
   }
 </script>
@@ -34,9 +38,9 @@
 
     <form on:submit|preventDefault={submit} class="space-y-4 text-left">
       <input
-        placeholder="Email"
-        type="email"
-        bind:value={email}
+        placeholder="Username"
+        type="text"
+        bind:value={username}
         required
         class="w-full p-3 rounded-xl bg-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400"
       />
@@ -47,17 +51,19 @@
         required
         class="w-full p-3 rounded-xl bg-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400"
       />
+
       <button
         type="submit"
         class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold tracking-wide shadow-md hover:opacity-90 active:scale-95 transition"
+        disabled={loading}
       >
-        Log In
+        {loading ? 'Logging In...' : 'Log In'}
       </button>
     </form>
 
     <p class="text-white/70 mt-6">
       Don’t have an account?
-      <a href="/signup" class="text-pink-200 hover:underline">Sign up</a>
+      <a href="/auth/signup" class="text-pink-200 hover:underline">Sign up</a>
     </p>
   </section>
 </div>

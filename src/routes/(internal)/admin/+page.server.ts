@@ -1,14 +1,12 @@
-// src/routes/admin/+page.server.ts
-export const load = async () => {
-  // 🚧 TEMPORARY: Bypass login for testing UI
-  const user = { name: 'Dev Admin', isAdmin: true };
+import { redirect } from '@sveltejs/kit';
 
-  return {
-    user,
-    stats: {
-      totalSales: 15800,
-      totalOrders: 47,
-      totalProducts: 23
-    }
-  };
+export const load = async ({ locals }) => {
+  if (!locals.user) throw redirect(302, '/auth/login');
+  if (locals.user.role !== 'admin') throw redirect(302, '/app/homepage');
+
+  // fetch admin data (products, reports) - replace with your actual calls
+  const products = await (globalThis as any).fetchAdminProducts?.() ?? [];
+  const reports = await (globalThis as any).fetchSalesReports?.() ?? [];
+
+  return { user: locals.user, products, reports };
 };

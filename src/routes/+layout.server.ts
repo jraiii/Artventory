@@ -1,32 +1,25 @@
-// src/routes/+layout.server.ts  (or wherever you put it)
 import { redirect } from '@sveltejs/kit';
 
-export const load = async ({ url }: { url: URL }) => {
+import type { ServerLoadEvent } from '@sveltejs/kit';
+
+export const load = async ({ url, locals }: ServerLoadEvent) => {
   const pathname = url.pathname;
 
-  // Publicly accessible pages (no login required)
-  const publicRoutes = [
-    '/',           // landing page or redirect
-    '/login',
-    '/signup',
-    '/register',
-    '/products',
-    '/cart',
-    '/checkout',
-    '/about',
-    '/contact'
-  ];
+  const publicRoutes = ['/login', '/signup', '/register'];
 
-  // Admin routes (require admin login)
-  const adminRoutes = ['/admin'];
+  // Not logged in → redirect to login
+  if (!locals.user && !publicRoutes.includes(pathname)) {
+    if (pathname !== '/login') throw redirect(302, '/login');
+    return {};
+  }
 
-  // Example: get cookie/session (optional, if you have auth logic)
-  // const session = event.cookies.get('session');
-  // const user = session ? JSON.parse(session) : null;
-
-  // For now, just skip redirect if route is public or admin
-  if (!publicRoutes.includes(pathname) && !adminRoutes.includes(pathname)) {
-    throw redirect(302, '/login');
+  // Logged in → block access to auth pages
+  if (locals.user && publicRoutes.includes(pathname)) {
+    if (locals.user.role === 'admin') {
+      throw redirect(302, '/internal/admin');
+    } else {
+      throw redirect(302, '/app/homepage');
+    }
   }
 
   return {};

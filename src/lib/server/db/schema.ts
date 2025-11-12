@@ -1,6 +1,8 @@
 import { pgTable, timestamp, text, pgEnum, decimal, integer, varchar, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
+/* ---------- ENUM DEFINITIONS ---------- */
+
 const userRoles = ['admin', 'cashier', 'manager', 'owner'] as const;
 export type UserRole = (typeof userRoles)[number];
 export const userRole = pgEnum('role', userRoles);
@@ -17,15 +19,24 @@ const paymentStatuses = ['Pending', 'Paid', 'Refunded'] as const;
 export type PaymentStatus = (typeof paymentStatuses)[number];
 export const paymentStatus = pgEnum('payment_status', paymentStatuses);
 
+/* ---------- TABLES ---------- */
+
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
   fullname: text('fullname').notNull(),
+  username: text('username').notNull().unique(), // ✅ Added username
   email: text('email').notNull().unique(),
   contactNo: text('contact_no'),
   hashedPassword: text('hashed_password').notNull(),
   role: userRole('role').notNull(),
   active: boolean('active').default(true),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const session = pgTable('session', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
 });
 
 export const store = pgTable('store', {
@@ -63,7 +74,7 @@ export const transactionItems = pgTable('transaction_items', {
   transactionId: text('transaction_id').notNull().references(() => transaction.id, { onDelete: 'cascade' }),
   productId: text('product_id').notNull().references(() => product.id, { onDelete: 'cascade' }),
   quantity: integer('quantity').notNull().default(1),
-  price: decimal('price', { precision: 10, scale: 2 }).notNull(), // price at the time of sale
+  price: decimal('price', { precision: 10, scale: 2 }).notNull(),
 });
 
 export const payment = pgTable('payment', {
@@ -75,52 +86,11 @@ export const payment = pgTable('payment', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-export const storeRelations = relations(store, ({ one, many }) => ({
-  owner: one(user, {
-    fields: [store.ownerId],
+/* ---------- RELATIONS ---------- */
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
     references: [user.id],
   }),
-  products: many(product),
-  transactions: many(transaction),
 }));
-
-export const productRelations = relations(product, ({ one, many }) => ({
-  store: one(store, {
-    fields: [product.storeId],
-    references: [store.id],
-  }),
-  transactionItems: many(transactionItems),
-}));
-
-export const transactionRelations = relations(transaction, ({ one, many }) => ({
-  cashier: one(user, {
-    fields: [transaction.cashierId],
-    references: [user.id],
-  }),
-  store: one(store, {
-    fields: [transaction.storeId],
-    references: [store.id],
-  }),
-  items: many(transactionItems),
-  payments: many(payment),
-}));
-
-export const transactionItemsRelations = relations(transactionItems, ({ one }) => ({
-  transaction: one(transaction, {
-    fields: [transactionItems.transactionId],
-    references: [transaction.id],
-  }),
-  product: one(product, {
-    fields: [transactionItems.productId],
-    references: [product.id],
-  }),
-}));
-
-export const paymentRelations = relations(payment, ({ one }) => ({
-  transaction: one(transaction, {
-    fields: [payment.transactionId],
-    references: [transaction.id],
-  }),
-}));
-
-
