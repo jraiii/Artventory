@@ -7,17 +7,18 @@ export const load: PageServerLoad = async ({ locals }) => {
   // 1️⃣ Redirect unauthenticated users to login
   if (!locals.user) throw redirect(302, '/login');
 
-  // 2️⃣ Redirect admins to admin dashboard
-  if (locals.user.role === 'admin') throw redirect(302, '/admin');
+  // 2️⃣ Only allow cashier/user roles here
+  if (locals.user.role === 'admin') {
+    // Admins should not see homepage, send them to /admin
+    throw redirect(302, '/admin');
+  }
 
-  // 3️⃣ Fetch products & categories (replace with your real DB calls)
+  // 3️⃣ Demo data
   const products = await (globalThis as any).fetchProducts?.() ?? [];
   const categories = await (globalThis as any).fetchCategories?.() ?? [];
+  const shops = await (globalThis as any).fetchShops?.() ?? [];
 
-  // 4️⃣ Fetch art shops in Balanga, Bataan (replace with your real DB calls)
-  const shops = await (globalThis as any).fetchShops?.({ city: 'Balanga', province: 'Bataan' }) ?? [];
-
-  // 5️⃣ Return data to page
+  // 4️⃣ Return data to page
   return {
     user: locals.user as SessionUser,
     products,

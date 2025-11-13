@@ -1,4 +1,13 @@
-import { pgTable, timestamp, text, pgEnum, decimal, integer, varchar, boolean } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  timestamp,
+  text,
+  pgEnum,
+  decimal,
+  integer,
+  varchar,
+  boolean
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 /* ---------- ENUM DEFINITIONS ---------- */
@@ -24,7 +33,7 @@ export const paymentStatus = pgEnum('payment_status', paymentStatuses);
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
   fullname: text('fullname').notNull(),
-  username: text('username').notNull().unique(), // ✅ Added username
+  username: text('username').notNull().unique(),
   email: text('email').notNull().unique(),
   contactNo: text('contact_no'),
   hashedPassword: text('hashed_password').notNull(),
@@ -92,5 +101,53 @@ export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
     fields: [session.userId],
     references: [user.id],
+  }),
+}));
+
+export const storeRelations = relations(store, ({ one, many }) => ({
+  owner: one(user, {
+    fields: [store.ownerId],
+    references: [user.id],
+  }),
+  products: many(product),
+  transactions: many(transaction),
+}));
+
+export const productRelations = relations(product, ({ one, many }) => ({
+  store: one(store, {
+    fields: [product.storeId],
+    references: [store.id],
+  }),
+  transactionItems: many(transactionItems),
+}));
+
+export const transactionRelations = relations(transaction, ({ one, many }) => ({
+  cashier: one(user, {
+    fields: [transaction.cashierId],
+    references: [user.id],
+  }),
+  store: one(store, {
+    fields: [transaction.storeId],
+    references: [store.id],
+  }),
+  items: many(transactionItems),
+  payments: many(payment),
+}));
+
+export const transactionItemRelations = relations(transactionItems, ({ one }) => ({
+  transaction: one(transaction, {
+    fields: [transactionItems.transactionId],
+    references: [transaction.id],
+  }),
+  product: one(product, {
+    fields: [transactionItems.productId],
+    references: [product.id],
+  }),
+}));
+
+export const paymentRelations = relations(payment, ({ one }) => ({
+  transaction: one(transaction, {
+    fields: [payment.transactionId],
+    references: [transaction.id],
   }),
 }));

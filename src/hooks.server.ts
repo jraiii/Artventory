@@ -73,21 +73,23 @@ import { eq } from 'drizzle-orm';
 
 // 🔹 Main handle function for authentication
 export const handle: Handle = async ({ event, resolve }) => {
-  const token = event.cookies.get(auth.sessionCookieName);
+  const role = event.cookies.get('demo_role');
+  const username = event.cookies.get('demo_username');
 
-  if (token) {
-    const session = await auth.getSession(token);
-    if (session && new Date(session.expiresAt) > new Date()) {
-      const [user] = await db.select().from(table.user).where(eq(table.user.id, session.userId));
-      if (user) {
-        event.locals.user = {
-          id: user.id,
-          fullname: user.fullname,
-          email: user.email,
-          role: user.role as SessionUser['role']
-        };
-      }
-    }
+  console.log('🔍 Incoming request to:', event.url.pathname);
+  console.log('🍪 Cookies:', { demo_role: role, demo_username: username });
+
+  if (role && username) {
+    event.locals.user = {
+      id: username,
+      username,
+      fullname: username,
+      email: `${username}@demo.local`,
+      role: role as 'admin' | 'cashier'
+    };
+    console.log('✅ locals.user set:', event.locals.user);
+  } else {
+    console.warn('⚠️ No valid demo cookies found — user not authenticated');
   }
 
   return resolve(event);

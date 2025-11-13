@@ -1,26 +1,35 @@
-// src/routes/+layout.server.ts
 import { redirect } from '@sveltejs/kit';
 import type { ServerLoadEvent } from '@sveltejs/kit';
 import type { SessionUser } from '$lib/types/auth';
 
 export const load = async ({ url, locals }: ServerLoadEvent) => {
-  const pathname = url.pathname;
-  const publicRoutes = ['/login', '/signup', '/register'];
+  const pathname = url.pathname.split('?')[0].replace(/\/$/, '');
 
-  if (!locals.user && !publicRoutes.includes(pathname)) throw redirect(302, '/login');
+  // ✅ Public routes (expandable)
+  const publicRoutes = ['/login', '/demo'];
+  const isPublic = publicRoutes.includes(pathname);
 
-  if (locals.user && publicRoutes.includes(pathname)) {
-    const roleRedirectMap: Record<SessionUser['role'], string | null> = {
+  // 🚫 Block access to private routes if not logged in
+  if (!locals.user && !isPublic) {
+    console.warn(`Blocked unauthenticated access to ${pathname}`);
+    throw redirect(302, '/login');
+  }
+
+  // 🔁 Redirect logged-in users away from public routes
+  if (locals.user && isPublic) {
+    const roleRedirectMap: Record<SessionUser['role'], string> = {
       admin: '/admin',
+      cashier: '/homepage',
       user: '/homepage',
-      cashier: null,
-      manager: null,
-      owner: null
+      manager: '/homepage',
+      owner: '/homepage'
     };
 
-    // ✅ Type assertion ensures TypeScript knows the key exists
-    const redirectPath = roleRedirectMap[locals.user.role as keyof typeof roleRedirectMap];
-    if (redirectPath) throw redirect(302, redirectPath);
+    const role = locals.user.role as keyof typeof roleRedirectMap;
+    const redirectPath = roleRedirectMap[role] ?? '/homepage';
+
+    console.info(`Redirecting ${locals.user.username} (${role}) from public route to ${redirectPath}`);
+    throw redirect(302, redirectPath);
   }
 
   return {};

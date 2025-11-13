@@ -1,13 +1,17 @@
+// src/routes/logout/+page.server.ts
 import { redirect } from '@sveltejs/kit';
-import * as auth from '$lib/server/auth';
+import type { Actions } from './$types';
 
-export const load = async ({ cookies }) => {
-  // Clear the session cookie
-  cookies.delete(auth.sessionCookieName, { path: '/' });
+export const actions: Actions = {
+  default: async (event) => {
+    // ❌ Clear demo cookies
+    event.cookies.delete('demo_role', { path: '/' });
+    event.cookies.delete('demo_username', { path: '/' });
 
-  // Optional: clear server-side session if you store it
-  // await auth.deleteSession(token);
+    // Reset locals.user just in case
+    event.locals.user = undefined;
 
-  // Redirect to login page
-  throw redirect(302, '/login'); // Must match your login route
+    // 🔁 Redirect back to login
+    throw redirect(302, '/login');
+  }
 };
