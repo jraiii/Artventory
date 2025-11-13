@@ -15,6 +15,13 @@
       "when": 1762489077514,
       "tag": "0001_hesitant_jack_flag",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1762953807284,
+      "tag": "0002_simple_talisman",
+      "breakpoints": true
     }
   ]
 }
