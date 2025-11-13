@@ -17,7 +17,6 @@
     }[];
   };
 
-  // Use optional chaining in case data is undefined
   let products = data?.products ?? [];
   let shops = data?.shops ?? [];
 
@@ -29,18 +28,30 @@
   <!-- Sidebar -->
   <aside class="w-64 bg-gradient-to-b from-purple-700 via-pink-600 to-indigo-600 text-white flex flex-col shadow-lg fixed h-screen">
     <div class="text-2xl font-bold p-6 text-center tracking-wide">ARTVENTORY</div>
-    <nav class="flex-1 px-4 space-y-2">
-      <button class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition" on:click={() => window.location.href='/homepage'}>
-        Home
+    <nav class="flex-1 px-4 space-y-4">
+      <button
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
+        on:click={() => window.location.href='/homepage'}
+      >
+        🏠 Home
       </button>
-      <button class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition" on:click={() => window.location.href='/cart'}>
-        Cart
+      <button
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
+        on:click={() => window.location.href='/cart'}
+      >
+        🛒 Cart
       </button>
-      <button class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition" on:click={() => window.location.href='/checkout'}>
-        Checkout
+      <button
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
+        on:click={() => window.location.href='/checkout'}
+      >
+        💳 Checkout
       </button>
-      <button class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition" on:click={() => window.location.href='/logout'}>
-        Logout
+      <button
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
+        on:click={() => window.location.href='/logout'}
+      >
+        🚪 Logout
       </button>
     </nav>
   </aside>
@@ -58,14 +69,14 @@
       <h2 class="text-2xl font-bold text-white mb-6">✨ Latest Products</h2>
       <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {#each latestProducts as product (product.id)}
-          <div class="bg-white/10 border border-white/20 rounded-3xl shadow-xl p-6 hover:shadow-2xl hover:scale-[1.02] transition transform backdrop-blur-sm flex flex-col">
+          <div class="bg-white rounded-xl shadow-md p-6 transition transform hover:-translate-y-1 hover:shadow-lg flex flex-col">
             {#if product.image}
-              <img src={product.image} alt={product.name} class="w-full h-48 object-cover rounded-2xl border border-white/20" />
+              <img src={product.image} alt={product.name} class="w-full h-48 object-cover rounded-xl border border-gray-200" />
             {/if}
-            <h3 class="text-lg font-bold mt-4 text-white">{product.name}</h3>
-            <p class="text-sm text-slate-200 mt-2 line-clamp-2">{product.description}</p>
+            <h3 class="text-lg font-bold mt-4 text-gray-900">{product.name}</h3>
+            <p class="text-sm text-gray-600 mt-2 line-clamp-2">{product.description}</p>
             <div class="flex justify-between items-center mt-4">
-              <span class="font-bold text-lg text-pink-300">₱{product.price}</span>
+              <span class="font-bold text-lg text-pink-600">₱{product.price}</span>
               <button
                 class="bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-semibold px-4 py-2 rounded-full hover:opacity-90 active:scale-95 transition"
                 on:click={() => addToCart({
@@ -92,12 +103,12 @@
       <h2 class="text-2xl font-bold text-white mb-6">🏬 Art Shops in Balanga, Bataan</h2>
       <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {#each shops as shop (shop.id)}
-          <div class="bg-white/10 border border-white/20 rounded-3xl shadow-xl p-6 hover:shadow-2xl hover:scale-[1.02] transition transform backdrop-blur-sm flex flex-col">
+          <div class="bg-white rounded-xl shadow-md p-6 transition transform hover:-translate-y-1 hover:shadow-lg flex flex-col">
             {#if shop.image}
-              <img src={shop.image} alt={shop.name} class="w-full h-48 object-cover rounded-2xl border border-white/20" />
+              <img src={shop.image} alt={shop.name} class="w-full h-48 object-cover rounded-xl border border-gray-200" />
             {/if}
-            <h3 class="text-lg font-bold mt-4 text-white">{shop.name}</h3>
-            <p class="text-sm text-slate-200 mt-2">{shop.address}</p>
+            <h3 class="text-lg font-bold mt-4 text-gray-900">{shop.name}</h3>
+            <p class="text-sm text-gray-600 mt-2">{shop.address}</p>
             <a
               class="mt-4 bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-semibold px-4 py-2 rounded-full hover:opacity-90 active:scale-95 transition text-center"
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.address)}`}

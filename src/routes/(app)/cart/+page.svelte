@@ -9,29 +9,29 @@
   <!-- Sidebar -->
   <aside class="w-64 bg-gradient-to-b from-purple-700 via-pink-600 to-indigo-600 text-white flex flex-col shadow-lg fixed h-screen">
     <div class="text-2xl font-bold p-6 text-center tracking-wide">ARTVENTORY</div>
-    <nav class="flex-1 px-4 space-y-2">
+    <nav class="flex-1 px-4 space-y-4">
       <button
-        class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition"
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
         on:click={() => window.location.href='/homepage'}
       >
-        Home
+        🏠 Home
       </button>
       <button
-        class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition"
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
       >
-        Cart
+        🛒 Cart
       </button>
       <button
-        class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition"
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
         on:click={() => window.location.href='/checkout'}
       >
-        Checkout
+        💳 Checkout
       </button>
       <button
-        class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition"
+        class="w-full text-left px-4 py-3 bg-white text-gray-900 rounded-xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg font-semibold"
         on:click={() => window.location.href='/logout'}
       >
-        Logout
+        🚪 Logout
       </button>
     </nav>
   </aside>
@@ -42,12 +42,12 @@
       <!-- Products List -->
       <section class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 flex-1">
         {#each products as product}
-          <div class="bg-white/10 border border-white/20 rounded-3xl shadow-xl p-6 hover:shadow-2xl hover:scale-[1.02] transition transform backdrop-blur-sm">
-            <img src={product.image} alt={product.name} class="w-full h-48 object-cover rounded-2xl border border-white/20" />
-            <h2 class="text-lg font-bold mt-4 text-white">{product.name}</h2>
-            <p class="text-sm text-slate-200 mt-2 line-clamp-2">{product.description}</p>
+          <div class="bg-white rounded-xl shadow-md p-6 transition transform hover:-translate-y-1 hover:shadow-lg flex flex-col">
+            <img src={product.image} alt={product.name} class="w-full h-48 object-cover rounded-xl border border-gray-200" />
+            <h2 class="text-lg font-bold mt-4 text-gray-900">{product.name}</h2>
+            <p class="text-sm text-gray-600 mt-2 line-clamp-2">{product.description}</p>
             <div class="flex justify-between items-center mt-4">
-              <span class="font-bold text-lg text-pink-300">₱{product.price}</span>
+              <span class="font-bold text-lg text-pink-600">₱{product.price}</span>
               <button
                 class="bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-semibold px-4 py-2 rounded-full hover:opacity-90 active:scale-95 transition"
                 on:click={() =>
@@ -67,15 +67,15 @@
       </section>
 
       <!-- Cart Summary -->
-      <aside class="bg-white/10 border border-white/20 text-white rounded-3xl shadow-xl p-6 w-full lg:w-1/3 backdrop-blur-md flex-shrink-0">
-        <h2 class="text-2xl font-extrabold mb-4 border-b border-white/30 pb-2 flex items-center gap-2">🛒 My Cart</h2>
+      <aside class="bg-white rounded-xl shadow-md p-6 transition transform hover:-translate-y-1 hover:shadow-lg w-full lg:w-1/3 flex-shrink-0">
+        <h2 class="text-2xl font-extrabold mb-4 border-b border-gray-200 pb-2 flex items-center gap-2 text-gray-900">🛒 My Cart</h2>
 
         {#if $cart.length === 0}
-          <p class="text-slate-200 italic mt-6 text-center">Your cart is empty.</p>
+          <p class="text-gray-600 italic mt-6 text-center">Your cart is empty.</p>
         {:else}
           <table class="w-full text-sm text-left mt-4">
             <thead>
-              <tr class="border-b border-white/30 text-slate-200">
+              <tr class="border-b border-gray-200 text-gray-600">
                 <th class="py-2">Product</th>
                 <th class="py-2">Price</th>
                 <th class="py-2">Qty</th>
@@ -84,17 +84,17 @@
             </thead>
             <tbody>
               {#each $cart as item (item.id)}
-                <tr class="border-b border-white/20 hover:bg-white/10">
-                  <td class="py-2 font-medium">{item.name}</td>
-                  <td class="py-2">₱{item.price}</td>
-                  <td class="py-2 text-center">{item.qty}</td>
-                  <td class="py-2 text-right font-semibold">₱{item.qty * item.price}</td>
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                  <td class="py-2 font-medium text-gray-900">{item.name}</td>
+                  <td class="py-2 text-gray-700">₱{item.price}</td>
+                  <td class="py-2 text-center text-gray-700">{item.qty}</td>
+                  <td class="py-2 text-right font-semibold text-gray-900">₱{item.qty * item.price}</td>
                 </tr>
               {/each}
             </tbody>
           </table>
 
-          <div class="flex justify-between mt-6 text-lg font-bold">
+          <div class="flex justify-between mt-6 text-lg font-bold text-gray-900">
             <span>Total:</span>
             <span>₱{$cartTotal}</span>
           </div>
